@@ -1,0 +1,20 @@
+name: Notebook checks
+
+on:
+  push:
+    paths-ignore:
+    - "run.py"
+
+jobs:
+  test_job:
+    # If you change this job, please also change it in
+    # build_runner.yaml (and see comments there for explanation)
+    runs-on: ubuntu-latest
+    name: Test notebooks are runnable and up-to-date
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Test
+      uses: ./.github/actions/build
+      with:
+        args: ./run_tests.sh
