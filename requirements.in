@@ -20,3 +20,4 @@ plotly
 ipywidgets
 
 # Add extra per-notebook packages here
+openpyxl
