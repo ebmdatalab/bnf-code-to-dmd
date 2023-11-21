@@ -37,6 +37,7 @@ from ebmdatalab import bq
 from ebmdatalab import charts
 from ebmdatalab import maps
 import datetime
+import openpyxl
 
 # ## Create data from BigQuery
 
@@ -75,13 +76,13 @@ INNER JOIN
 ON
   amp.vmp = vmp.id
 LEFT OUTER JOIN
-  dmd.vtm AS vtm
+  dmd.vtm AS vtm 
 ON
-  vmp.vtm = vtm.id
+  vmp.vtm = vtm.id 
   """
 
-exportfile = os.path.join("..","data","dmd_df.csv")
-dmd_df = bq.cached_read(sql, csv_path=exportfile, use_cache=True)
+exportfile = os.path.join("..","data","bnf_to_dmd.csv")
+dmd_df = bq.cached_read(sql, csv_path=exportfile, use_cache=False)
 # -
 
 dmd_df.head()
@@ -101,8 +102,8 @@ SELECT
 FROM
   ebmdatalab.hscic.normalised_prescribing AS rx
 WHERE
-  month BETWEEN '2021-08-01'
-  AND '2022-07-01'
+  month BETWEEN '2022-09-01'
+  AND '2023-08-01'
 GROUP BY
   bnf_name,
   bnf_code
@@ -133,14 +134,12 @@ test_vtm_no_dmd  = test_df[test_df['vtm'].isnull()].sort_values(by='items', asce
 
 test_vtm_no_dmd.head(30)
 
-# +
-#df.groupby(['Country', 'Item_Code'])[["Y1961", "Y1962", "Y1963"]].sum()
-
 group_vtm_no_dmd = test_vtm_no_dmd.groupby(['bnf_name'])[['items']].mean().sort_values(by='items', ascending=False)
-# -
 
 group_vtm_no_dmd.head(30)
 
 # The largest number of prescribing items with a `NULL` `VTM` are either a) where they are not drugs, but appliances or devices (such as Freestyle Libre), OR where the drug has more than 3 ingredients.  In this case (such as Laxido) no VTM is assigned to the formulation in the dm+d.  Therefore it appears that the table accurately reflects what the dm+d says.
+
+# +
 
 
